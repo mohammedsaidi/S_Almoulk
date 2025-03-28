@@ -1,1 +1,110 @@
+/* Arabic font styling */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap');
 
+body {
+    font-family: 'Scheherazade New', 'Amiri', serif;
+    line-height: 1.8;
+}
+
+/* Header Styling */
+.surah-title {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--bs-info);
+}
+
+.bismillah {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+/* Verse Styling */
+.verse-container {
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.verse-item {
+    padding: 1.2rem 0.8rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    position: relative;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.verse-item:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.verse-item:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.verse-item.active {
+    background-color: rgba(13, 110, 253, 0.15);
+    border-right: 4px solid var(--bs-primary);
+}
+
+.verse-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.arabic-text {
+    font-size: 1.4rem;
+    line-height: 2;
+    text-align: right;
+    flex-grow: 1;
+}
+
+.verse-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verse-number {
+    margin-right: 0.4rem;
+    min-width: 2rem;
+    text-align: center;
+}
+
+.download-btn {
+    padding: 0.25rem 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Player controls */
+.player-controls {
+    margin: 2rem 0;
+}
+
+#progressBar {
+    transition: width 0.3s ease;
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .arabic-text {
+        font-size: 1.6rem;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .arabic-text {
+        font-size: 1.8rem;
+    }
+}
