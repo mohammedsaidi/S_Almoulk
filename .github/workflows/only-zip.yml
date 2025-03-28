@@ -1,0 +1,35 @@
+name: فقط أرشفة ملفات ZIP
+
+# نسخة مبسطة للغاية من سير العمل، بدون استخدام upload-artifact
+# تعالج مشكلتي "Missing download" و "Resource not accessible"
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+      
+      - name: Archive project files
+        run: |
+          echo "تبسيط الأرشفة إلى أقصى حد"
+          mkdir -p build
+          zip -r build/surah_mulk_app.zip . -x "*.git*" -x "*node_modules*" -x "*venv*" -x "*.replit*"
+          echo "تم إنشاء ملف الأرشيف بنجاح!"
+          echo "ARCHIVE_COMPLETE=true" >> $GITHUB_ENV
+      
+      - name: Print instructions
+        run: |
+          echo "-------------------------------------------"
+          echo "تم الانتهاء من عملية الأرشفة"
+          echo "لتنزيل المشروع وبناء ملف APK:"
+          echo ""
+          echo "1. انتقل إلى القائمة 'Code' في الصفحة الرئيسية للمستودع"
+          echo "2. انقر على 'Download ZIP'"
+          echo "3. استخدم خدمة تحويل عبر الإنترنت كما هو موضح في الوثائق"
+          echo "-------------------------------------------"
