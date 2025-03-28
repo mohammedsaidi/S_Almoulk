@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحويل التطبيق إلى APK - سورة الملك</title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1e1e1e">
+    <meta name="description" content="تطبيق يساعدك على حفظ سورة الملك بالصوت والتكرار">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="سورة الملك">
+    <!-- PWA Icons -->
+    <link rel="icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <!-- Bootstrap 5 CSS (Replit-themed) -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .step-container {
+            margin-bottom: 2rem;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--bs-primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-left: 10px;
+        }
+        .screenshot-container {
+            border: 1px solid var(--bs-border-color);
+            border-radius: 5px;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .screenshot-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <header class="text-center mb-4">
+            <h1 class="display-5 mb-3">تحويل التطبيق إلى APK</h1>
+            <div class="mb-3">
+                <a href="/" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-right ml-2"></i>
+                    العودة للصفحة الرئيسية
+                </a>
+            </div>
+        </header>
+
+        <main>
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-mobile-alt me-2"></i> تعليمات تحويل التطبيق إلى ملف APK</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        هذا الدليل يشرح كيفية تحويل التطبيق الحالي إلى ملف APK الذي يمكن تثبيته على أجهزة أندرويد.
+                    </div>
+
+                    <h5 class="mt-4 mb-3">الطريقة الأولى: استخدام PWA2APK (الطريقة المفضلة)</h5>
+                    
+                    <div class="step-container">
+                        <div class="d-flex align-items-center">
+                            <span class="step-number">١</span>
+                            <h6 class="mb-0">قم بزيارة موقع PWA2APK من خلال الرابط التالي:</h6>
+                        </div>
+                        <div class="ps-5 mt-2">
+                            <a href="https://pwa2apk.com/" target="_blank" class="btn btn-outline-primary">
+                                <i class="fas fa-external-link-alt me-2"></i> فتح موقع PWA2APK
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="step-container">
+                        <div class="d-flex align-items-center">
+                            <span class="step-number">٢</span>
+                            <h6 class="mb-0">قم بإدخال عنوان URL للتطبيق:</h6>
+                        </div>
+                        <div class="ps-5 mt-2">
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="{{ app_url }}" id="appUrl" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('appUrl')">
+                                    <i class="fas fa-copy"></i> نسخ
+                                </button>
+                            </div>
+                            <small class="text-muted">قم بنسخ هذا العنوان ولصقه في موقع PWA2APK</small>
+                        </div>
+                    </div>
+
+                    <div class="step-container">
+                        <div class="d-flex align-items-center">
+                            <span class="step-number">٣</span>
+                            <h6 class="mb-0">قم بإدخال معلومات التطبيق:</h6>
+                        </div>
+                        <div class="ps-5 mt-2">
+                            <ul>
+                                <li>اسم التطبيق: <strong>سورة الملك - تحفيظ وتكرار</strong></li>
+                                <li>وصف التطبيق: <strong>تطبيق يساعدك على حفظ سورة الملك مع خاصية الاستماع والتكرار</strong></li>
+                                <li>حزمة التطبيق: <strong>com.appname.surahmulk</strong> (يمكنك تغييره كما تريد)</li>
+                                <li>الأيقونة: قم بتحميل أيقونة التطبيق من <a href="{{ url_for('static', filename='icons/icon-512x512.png') }}" download>هنا</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step-container">
+                        <div class="d-flex align-items-center">
+                            <span class="step-number">٤</span>
+                            <h6 class="mb-0">اضغط على زر "إنشاء APK"</h6>
+                        </div>
+                        <div class="ps-5 mt-2">
+                            <p>انتظر بضع دقائق حتى تكتمل عملية التحويل، ثم قم بتنزيل ملف APK الذي تم إنشاؤه.</p>
+                        </div>
+                    </div>
+
+                    <h5 class="mt-5 mb-3">الطريقة الثانية: استخدام Bubblewrap CLI (للمطورين)</h5>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-code me-2"></i>
+                        هذه الطريقة تتطلب معرفة تقنية ومهارات برمجية.
+                    </div>
+
+                    <div class="step-container">
+                        <div class="d-flex align-items-center">
+                            <span class="step-number">١</span>
+                            <h6 class="mb-0">تثبيت Bubblewrap CLI</h6>
+                        </div>
+                        <div class="ps-5 mt-2">
+                            <pre class="bg-dark text-light p-3 rounded"><code>npm i -g @bubblewrap/cli</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-container">
+                        <div class="d-flex align-items-center">
+                            <span class="step-number">٢</span>
+                            <h6 class="mb-0">إنشاء التطبيق</h6>
+                        </div>
+                        <div class="ps-5 mt-2">
+                            <pre class="bg-dark text-light p-3 rounded"><code>bubblewrap init --manifest={{ app_url }}manifest.json</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="step-container">
+                        <div class="d-flex align-items-center">
+                            <span class="step-number">٣</span>
+                            <h6 class="mb-0">بناء ملف APK</h6>
+                        </div>
+                        <div class="ps-5 mt-2">
+                            <pre class="bg-dark text-light p-3 rounded"><code>bubblewrap build</code></pre>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mt-5 mb-3">بعد تنزيل ملف APK</h5>
+                    
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        بعد الحصول على ملف APK، قم بنقله إلى جهاز Android الخاص بك وتثبيته.
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>ملاحظة:</strong> قد تحتاج إلى تفعيل خيار "تثبيت من مصادر غير معروفة" في إعدادات جهازك قبل تثبيت التطبيق.
+                    </div>
+                    
+                    <h5 class="mt-5 mb-3">تحديث التطبيق</h5>
+                    
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0"><i class="fas fa-sync-alt me-2"></i> كيفية تحديث التطبيق بعد التثبيت</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>هناك عدة طرق لتحديث التطبيق بعد تثبيته:</p>
+                            
+                            <div class="step-container">
+                                <div class="d-flex align-items-center">
+                                    <span class="step-number">١</span>
+                                    <h6 class="mb-0">التحديث اليدوي للتطبيق</h6>
+                                </div>
+                                <div class="ps-5 mt-2">
+                                    <p>قم بتنزيل أحدث إصدار من ملف APK واتبع نفس خطوات التثبيت الأولى. سيقوم نظام Android بتحديث التطبيق تلقائيًا عند تثبيت نسخة أحدث.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step-container">
+                                <div class="d-flex align-items-center">
+                                    <span class="step-number">٢</span>
+                                    <h6 class="mb-0">تحديث الملفات الصوتية</h6>
+                                </div>
+                                <div class="ps-5 mt-2">
+                                    <p>إذا كنت تريد فقط تحديث ملفات الصوت، يمكنك فتح التطبيق واستخدام خيار "إدارة الملفات الصوتية" ثم "رفع ملف صوتي" لتحديث الملفات الصوتية بدون إعادة تثبيت التطبيق بالكامل.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step-container">
+                                <div class="d-flex align-items-center">
+                                    <span class="step-number">٣</span>
+                                    <h6 class="mb-0">التحديث التلقائي عبر متصفح الويب</h6>
+                                </div>
+                                <div class="ps-5 mt-2">
+                                    <p>يمكنك أيضًا زيارة التطبيق عبر متصفح الويب على هاتفك من خلال زيارة الرابط أدناه. سيتم تحديث التطبيق تلقائيًا إذا كانت هناك تحديثات متاحة لخدمة العمل (Service Worker).</p>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" value="{{ app_url }}" id="updateUrl" readonly>
+                                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('updateUrl')">
+                                            <i class="fas fa-copy"></i> نسخ
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info mt-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>نصيحة:</strong> للحصول على أفضل تجربة، قم بتنزيل ملفات الصوت وتخزينها في التطبيق قبل استخدامه في وضع عدم الاتصال بالإنترنت.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center mt-5">
+            <p>تطبيق حفظ سورة الملك - جميع الحقوق محفوظة &copy; 2023</p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PWA init script -->
+    <script src="{{ url_for('static', filename='js/pwa-init.js') }}"></script>
+    <!-- Custom script -->
+    <script>
+        function copyToClipboard(elementId) {
+            var copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            
+            // Show tooltip or alert
+            alert("تم نسخ الرابط: " + copyText.value);
+        }
+    </script>
+</body>
+</html>

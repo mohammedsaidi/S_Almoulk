@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الملفات الصوتية - سورة الملك</title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1e1e1e">
+    <meta name="description" content="تطبيق يساعدك على حفظ سورة الملك بالصوت والتكرار">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="سورة الملك">
+    <!-- PWA Icons -->
+    <link rel="icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <!-- Bootstrap 5 CSS (Replit-themed) -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .file-list-container {
+            margin-top: 2rem;
+        }
+        .file-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        .status-exists {
+            background-color: var(--bs-success);
+        }
+        .status-missing {
+            background-color: var(--bs-danger);
+        }
+        .audio-table th, .audio-table td {
+            vertical-align: middle;
+        }
+        .verse-text {
+            max-width: 500px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <header class="text-center mb-4">
+            <h1 class="display-5 mb-3">إدارة الملفات الصوتية</h1>
+            <div class="mb-3">
+                <a href="/" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-right ml-2"></i>
+                    العودة للصفحة الرئيسية
+                </a>
+                <a href="/upload-audio" class="btn btn-outline-success">
+                    <i class="fas fa-plus ml-2"></i>
+                    رفع ملف صوتي جديد
+                </a>
+            </div>
+        </header>
+
+        <main>
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i> حالة الملفات الصوتية</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="file-status status-exists"></span>
+                            <span>ملفات صوتية موجودة: {{ existing_files|length }} من 30</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="file-status status-missing"></span>
+                            <span>ملفات صوتية غير موجودة: {{ missing_files|length }} من 30</span>
+                        </div>
+                    </div>
+                    
+                    {% if existing_files %}
+                    <h5 class="mt-4 mb-3">الملفات الصوتية الموجودة:</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped audio-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>الآية</th>
+                                    <th>حجم الملف</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for file in existing_files %}
+                                <tr>
+                                    <td>{{ file.verse_number }}</td>
+                                    <td class="verse-text">{{ verses[file.verse_number-1].text }}</td>
+                                    <td>{{ file.size_kb }} KB</td>
+                                    <td>
+                                        <a href="/download-audio/{{ file.verse_number }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-download"></i> تحميل
+                                        </a>
+                                        <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ file.verse_number }})">
+                                            <i class="fas fa-trash"></i> حذف
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        لا توجد ملفات صوتية مرفوعة حتى الآن.
+                    </div>
+                    {% endif %}
+                    
+                    {% if missing_files %}
+                    <h5 class="mt-4 mb-3">الملفات الصوتية الناقصة:</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped audio-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>الآية</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for verse_number in missing_files %}
+                                <tr>
+                                    <td>{{ verse_number }}</td>
+                                    <td class="verse-text">{{ verses[verse_number-1].text }}</td>
+                                    <td>
+                                        <a href="/upload-audio?verse={{ verse_number }}" class="btn btn-sm btn-success">
+                                            <i class="fas fa-cloud-upload-alt"></i> رفع ملف
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="card">
+                            <div class="card-header bg-warning">
+                                <h5 class="mb-0 text-dark"><i class="fas fa-sync-alt me-2"></i> تحديث جميع الملفات الصوتية</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <p><i class="fas fa-info-circle me-2"></i> يمكنك تحديث جميع الملفات الصوتية الناقصة دفعة واحدة. قم باتباع الخطوات التالية:</p>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <h6 class="mb-2">1. رفع ملفات متعددة</h6>
+                                            <a href="/upload-audio?batch=true" class="btn btn-primary">
+                                                <i class="fas fa-upload me-2"></i> رفع ملفات متعددة
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <h6 class="mb-2">2. تحديث من التطبيق المثبت</h6>
+                                            <p class="small text-muted">إذا كنت تستخدم التطبيق المثبت، يمكنك فتح التطبيق والذهاب إلى صفحة "إدارة الملفات الصوتية" ثم "رفع ملف صوتي جديد" لتحديث الملفات.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center mt-5">
+            <p>تطبيق حفظ سورة الملك - جميع الحقوق محفوظة &copy; 2023</p>
+        </footer>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تأكيد الحذف</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    هل أنت متأكد من حذف الملف الصوتي للآية رقم <span id="deleteVerseNumber"></span>؟
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">تأكيد الحذف</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PWA init script -->
+    <script src="{{ url_for('static', filename='js/pwa-init.js') }}"></script>
+    <!-- Management script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize modals
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            
+            // Set up delete confirmation button
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            confirmBtn.addEventListener('click', function() {
+                const verseNumber = document.getElementById('deleteVerseNumber').textContent;
+                deleteAudioFile(verseNumber);
+            });
+        });
+        
+        function confirmDelete(verseNumber) {
+            // Display confirmation modal
+            document.getElementById('deleteVerseNumber').textContent = verseNumber;
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        }
+        
+        function deleteAudioFile(verseNumber) {
+            // Show loading state
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            const originalBtnText = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحذف...';
+            confirmBtn.disabled = true;
+            
+            // Send delete request
+            fetch(`/delete-audio/${verseNumber}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Close modal
+                const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                deleteModal.hide();
+                
+                if (data.success) {
+                    // Show success message
+                    alert(data.message);
+                    // Reload page to show updated file list
+                    window.location.reload();
+                } else {
+                    // Show error message
+                    alert('خطأ: ' + (data.error || 'حدث خطأ أثناء حذف الملف'));
+                    // Reset button
+                    confirmBtn.innerHTML = originalBtnText;
+                    confirmBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء الاتصال بالخادم');
+                // Reset button
+                confirmBtn.innerHTML = originalBtnText;
+                confirmBtn.disabled = false;
+                
+                // Close modal
+                const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                deleteModal.hide();
+            });
+        }
+    </script>
+</body>
+</html>
