@@ -1,1 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق سورة الملك - حفظ وتكرار</title>
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1e1e1e">
+    <meta name="description" content="تطبيق يساعدك على حفظ سورة الملك بالصوت والتكرار">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="سورة الملك">
+    <!-- PWA Icons -->
+    <link rel="icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <!-- Bootstrap 5 CSS (Replit-themed) -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <header class="text-center mb-4">
+            <h1 class="display-4 mb-3 surah-title">سورة الملك</h1>
+            <div class="bismillah mb-4">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+            
+            <div class="admin-links mb-3">
+                <a href="/manage-audio" class="btn btn-sm btn-outline-info">
+                    <i class="fas fa-cog me-1"></i> إدارة الملفات الصوتية
+                </a>
+                <a href="/upload-audio" class="btn btn-sm btn-outline-success">
+                    <i class="fas fa-upload me-1"></i> رفع ملف صوتي
+                </a>
+                <a href="/export-apk" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-mobile-alt me-1"></i> تصدير كـ APK
+                </a>
+                <button id="installButton" class="btn btn-sm btn-outline-primary" style="display: none;">
+                    <i class="fas fa-download me-1"></i> تثبيت التطبيق
+                </button>
+            </div>
+            
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center mb-3">أدوات التشغيل</h5>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button id="playBtn" class="btn btn-primary">
+                                        <i class="fas fa-play me-2"></i> تشغيل
+                                    </button>
+                                    <button id="pauseBtn" class="btn btn-secondary">
+                                        <i class="fas fa-pause me-2"></i> إيقاف
+                                    </button>
+                                    <button id="repeatBtn" class="btn btn-info">
+                                        <i class="fas fa-redo-alt me-2"></i> تكرار
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="startVerse" class="form-label">بداية التكرار:</label>
+                                    <select id="startVerse" class="form-select mx-2">
+                                        {% for verse in verses %}
+                                        <option value="{{ verse.number }}">{{ verse.number }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    
+                                    <label for="endVerse" class="form-label">نهاية التكرار:</label>
+                                    <select id="endVerse" class="form-select mx-2">
+                                        {% for verse in verses %}
+                                        <option value="{{ verse.number }}" {% if verse.number == verses|length %}selected{% endif %}>{{ verse.number }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="repeatCount" class="form-label">عدد مرات التكرار للآية الواحدة:</label>
+                                <input type="number" class="form-control" id="repeatCount" min="1" value="1">
+                            </div>
+                            
+                            <div class="progress">
+                                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
 
+        <main>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card verse-container">
+                        <div class="card-body">
+                            <div id="verses-list">
+                                {% for verse in verses %}
+                                <div id="verse-{{ verse.number }}" class="verse-item" data-verse-number="{{ verse.number }}">
+                                    <div class="verse-content">
+                                        <span class="arabic-text">{{ verse.text }}</span>
+                                        <div class="verse-actions">
+                                            <a href="{{ url_for('download_audio', verse_number=verse.number) }}" class="btn btn-sm btn-outline-info download-btn" title="تحميل الصوت">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            <span class="verse-number badge rounded-pill bg-secondary">{{ verse.number }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="text-center mt-5">
+            <p>تطبيق حفظ سورة الملك - جميع الحقوق محفوظة &copy; 2023</p>
+        </footer>
+    </div>
+
+    <!-- Audio element with controls for debugging, normally hidden -->
+    <audio id="audioPlayer" preload="auto" controlsList="nodownload"></audio>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/player.js') }}?v=2"></script>
+    <!-- PWA init script -->
+    <script src="{{ url_for('static', filename='js/pwa-init.js') }}"></script>
+</body>
+</html>
